@@ -7,3 +7,5 @@ WORKDIR /app
 COPY . .
 
 RUN pip3 install -r requirements.txt
+
+CMD [ "python3", "advent-of-code.py", "-i", "test_input.txt"]
