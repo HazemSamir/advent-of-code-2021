@@ -1,9 +1,9 @@
+# Solution for https://adventofcode.com/2021/day/5
+
 import argparse
 import numpy as np
 
-from functools import reduce
-
-parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#5 part#1')
+parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#5 part#2')
 parser.add_argument('-input', '-i', metavar='input_file', type=str, required=True,
                     help='file with puzzle input')
 
@@ -23,10 +23,15 @@ with open(args.input, "r") as p_input:
 
 m = np.zeros(dims, dtype=np.int32)
 for b, e in vents:
-	if b[0] == e[0]:
-		m[b[0], min(b[1], e[1]) : max(b[1], e[1]) + 1] += 1
-	if b[1] == e[1]:
-		m[min(b[0], e[0]) : max(b[0], e[0]) + 1, b[1]] += 1
+	if b[0] == e[0] or b[1] == e[1]:
+		fixed_b = [min(b[0], e[0]), min(b[1], e[1])]
+		fixed_e = [max(b[0], e[0]) + 1, max(b[1], e[1]) + 1]
+		m[fixed_b[0] : fixed_e[0], fixed_b[1] : fixed_e[1]] += 1
+	else:
+		x_step = 1 if b[0] < e[0] else -1
+		y_step = 1 if b[1] < e[1] else -1
+		m[np.arange(b[0], e[0] + x_step, x_step), np.arange(b[1], e[1] + y_step, y_step)] += 1
+
 
 print(m)
 # converting first bit to 0 only keeps values > 1, converts 1 to zeros.
