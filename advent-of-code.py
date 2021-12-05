@@ -3,7 +3,7 @@ import numpy as np
 
 from functools import reduce
 
-parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#4 part#1')
+parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#4 part#2')
 parser.add_argument('-input', '-i', metavar='input_file', type=str, required=True,
                     help='file with puzzle input')
 
@@ -54,7 +54,6 @@ with open(args.input, "r") as p_input:
 		boards[-1] += [int(x) for x in line.split()]
 
 for i, board in enumerate(boards):
-	print(board)
 	for j, x in enumerate(board):
 		if x in board_map:
 			board_map[x].append((i, j))
@@ -63,6 +62,19 @@ for i, board in enumerate(boards):
 
 boards = np.array(boards, dtype=np.uint32)
 board_mask = np.zeros((len(boards)), dtype=np.uint32)
+winning_status = len(boards)  * [False]
+
+def is_winner(mask):
+	for winning_pos in all_winning_pos:
+		if mask & winning_pos == winning_pos:
+			return True
+	return False
+
+def calculate_score(board, board_mask, x):
+	unpacker = 2**np.arange(25, dtype=np.uint32)
+	unpacked = (~(board_mask & unpacker).astype(bool)).astype(np.uint32)
+	print("We have a winner!", board, unpacked)
+	return np.sum(unpacked * board) * x
 
 for x in numbers:
 	print(x)
@@ -73,13 +85,10 @@ for x in numbers:
 		print (i, j)
 		board_mask[i] |= np.uint32(1 << j)
 
-	for winning_pos in all_winning_pos:
-		for board, mask in zip(boards, board_mask):
-			if mask & winning_pos == winning_pos:
-				print("We have a winner!", board, mask)
-				unpacker = 2**np.arange(25, dtype=mask.dtype)
-				unpacked = (~(mask & unpacker).astype(bool)).astype(np.uint32)
-				print(np.sum(unpacked * board) * x)
-				exit(0)
+		prev_status = winning_status[i]
+		winning_status[i] = is_winner(board_mask[i])
+		if prev_status != winning_status[i] and False not in winning_status:
+			print(calculate_score(boards[i], board_mask[i], x))
+			exit(0)
 	print()
 
