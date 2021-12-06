@@ -18,18 +18,12 @@ with open(args.input, "r") as p_input:
 		state = [int(x) for x in line.strip().split(",")]
 
 NUM_DAYS = 256
-dp = {}
-def generate(x):
-	if x in dp:
-		return dp[x]
-	if x > NUM_DAYS:
-		return 0
-	dp[x] = 1 + generate(x + 7) + generate(x + 9)
-	return dp[x]
+dp = (NUM_DAYS + 9) * [0]
+
+for d in range(NUM_DAYS-1, -1, -1):
+	dp[d] = 1 + dp[d + 7] + dp[d + 9]
 
 s = len(state)
 for x in state:
-	s += generate(x+1)
+	s += dp[x]
 print(s)
-
-
