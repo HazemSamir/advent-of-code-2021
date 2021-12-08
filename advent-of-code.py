@@ -3,7 +3,7 @@
 import argparse
 import numpy as np
 
-parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#7 part#1')
+parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#7 part#2')
 parser.add_argument('-input', '-i', metavar='input_file', type=str, required=True,
                     help='file with puzzle input')
 
@@ -24,7 +24,8 @@ hi = max(state)
 def CalcCost(p):
 	cost = 0
 	for st in state:
-		cost += abs(p - st)
+		diff = abs(p - st)
+		cost += (diff * (diff + 1)) / 2
 	return cost
 
 while lo < hi:
