@@ -1,9 +1,9 @@
-# Solution for https://adventofcode.com/2021/day/6
+# Solution for https://adventofcode.com/2021/day/7
 
 import argparse
 import numpy as np
 
-parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#6 part#2')
+parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#7 part#1')
 parser.add_argument('-input', '-i', metavar='input_file', type=str, required=True,
                     help='file with puzzle input')
 
@@ -17,13 +17,24 @@ with open(args.input, "r") as p_input:
 	for line in p_input:
 		state = [int(x) for x in line.strip().split(",")]
 
-NUM_DAYS = 256
-dp = (NUM_DAYS + 9) * [0]
 
-for d in range(NUM_DAYS-1, -1, -1):
-	dp[d] = 1 + dp[d + 7] + dp[d + 9]
+lo = min(state)
+hi = max(state)
 
-s = len(state)
-for x in state:
-	s += dp[x]
-print(s)
+def CalcCost(p):
+	cost = 0
+	for st in state:
+		cost += abs(p - st)
+	return cost
+
+while lo < hi:
+	mid = int((lo+hi) / 2)
+	if mid == lo:
+		break
+
+	if CalcCost(mid) > CalcCost(mid+1):
+		lo = mid
+	else:
+		hi = mid
+
+print(min(CalcCost(lo), CalcCost(hi)))
