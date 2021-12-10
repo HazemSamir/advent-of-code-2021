@@ -18,19 +18,29 @@ with open(args.input, "r") as p_input:
 		synt.append(line.strip())
 
 CHARS = {')': '(', ']':'[', '}':'{', '>':'<'}
-CHARS_SCORE = {')': 3, ']': 57, '}': 1197, '>': 25137}
+CHARS_SCORE = {'(': 1, '[': 2, '{': 3, '<': 4}
 
-score = 0
+scores = []
 for line in synt:
 	stack = []
+	is_illegal = False
 	for c in line:
 		if c in CHARS:
 			if len(stack) == 0 or stack[-1] != CHARS[c]:
-				score += CHARS_SCORE[c]
+				is_illegal = True
 				break
 			else:
 				stack.pop()
 		else:
 			stack.append(c)
-print(score)
+	if not is_illegal:
+		s = 0
+		for c in reversed(stack):
+			s *= 5
+			s += CHARS_SCORE[c]
+		scores.append(s)
+
+scores = sorted(scores)
+print(scores)
+print(scores[int(len(scores) / 2)])
 
