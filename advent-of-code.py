@@ -1,11 +1,11 @@
-# Solution for https://adventofcode.com/2021/day/8
+# Solution for https://adventofcode.com/2021/day/9
 
 import argparse
 import numpy as np
 from itertools import permutations
 
 
-parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#8 part#2')
+parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#9 part#1')
 parser.add_argument('-input', '-i', metavar='input_file', type=str, required=True,
                     help='file with puzzle input')
 
@@ -13,47 +13,17 @@ args = parser.parse_args()
 print(args.input)
 
 ########################### Solution ############################
-state = []
+hmap = []
 
 with open(args.input, "r") as p_input:
 	for line in p_input:
-		line = line.strip().split("|")
-		state.append([x.split() for x in line])
+		hmap.append([int(x) for x in line.strip()])
 
-all_perms = [''.join(p) for p in permutations('abcdefg')]
+h = len(hmap)
+w = len(hmap[0])
 
-possible_numbers = []
-for p in all_perms:
-	numbers = 10 * [None]
-	#             a      b      c      d      e      f      g
-	numbers[0] = p[0] + p[1] + p[2] +        p[4] + p[5] + p[6]
-	numbers[1] =               p[2]               + p[5]
-	numbers[2] = p[0]        + p[2] + p[3] + p[4]        + p[6]
-	numbers[3] = p[0]        + p[2] + p[3]        + p[5] + p[6]
-	numbers[4] =        p[1] + p[2] + p[3]        + p[5]
-	numbers[5] = p[0] + p[1]        + p[3]        + p[5] + p[6]
-	numbers[6] = p[0] + p[1]        + p[3] + p[4] + p[5] + p[6]
-	numbers[7] = p[0]        + p[2]               + p[5]
-	numbers[8] = p[0] + p[1] + p[2] + p[3] + p[4] + p[5] + p[6]
-	numbers[9] = p[0] + p[1] + p[2] + p[3]        + p[5] + p[6]
-	possible_numbers.append([''.join(sorted(n)) for n in numbers])
-
-count = 0
-for st in state:
-	st_number = ''
-	st[0] = [''.join(sorted(s)) for s in st[0]]
-	st[1] = [''.join(sorted(s)) for s in st[1]]
-	for n in possible_numbers:
-		found_all = True
-		for x in st[0] + st[1]:
-			if x not in n:
-				# print(x, "not in", n)
-				found_all = False
-				break
-		if found_all:
-			for output in st[1]:
-				st_number += str(n.index(output))
-			break
-	count += int(st_number)
-	# print(count, st_number)
-print(count)
+s = 0
+for i in range(h):
+	for j in range(w):
+		s += (hmap[i][j] + 1) if (i - 1 < 0 or hmap[i][j] < hmap[i - 1][j]) and (j - 1 < 0 or hmap[i][j] < hmap[i][j - 1]) and (i + 1 >= h or hmap[i][j] < hmap[i + 1][j]) and (j + 1 >= w or hmap[i][j] < hmap[i][j + 1]) else 0
+print(s)
