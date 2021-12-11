@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 
 
-parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#11 part#1')
+parser = argparse.ArgumentParser(description='Solve advent-of-code-2021 day#11 part#2')
 parser.add_argument('-input', '-i', metavar='input_file', type=str, required=True,
                     help='file with puzzle input')
 
@@ -54,9 +54,10 @@ def Step(octmap):
 
 	return all_flash_count
 
-flash_count = 0
 octmap = ReadInput()
-for x in range(100):
-	flash_count += Step(octmap)
+step_count = 0
+while np.count_nonzero(octmap) > 0:
+	Step(octmap)
+	step_count += 1
 
-print(flash_count)
+print(step_count)
